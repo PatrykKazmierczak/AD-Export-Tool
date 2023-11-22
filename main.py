@@ -13,30 +13,33 @@ import io
 app = QApplication([])
 app.setStyleSheet("""
     QMainWindow {
-        background-color: #333;
+        background-color: #2b2b2b;
     }
 
     QPushButton {
         color: #fff;
-        background-color: #555;
+        background-color: #3d3d3d;
         border: none;
         padding: 10px;
         min-width: 100px;
         min-height: 40px;
+        border-radius: 5px;
     }
 
     QPushButton:hover {
-        background-color: #777;
+        background-color: #555;
     }
 
     QPushButton:pressed {
-        background-color: #999;
+        background-color: #777;
     }
 
     QLineEdit {
         padding: 10px;
         border: 2px solid #555;
         border-radius: 10px;
+        color: #fff;
+        background-color: #3d3d3d;
     }
 """)
 
