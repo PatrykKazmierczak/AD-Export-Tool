@@ -13,6 +13,8 @@ import sys
 import tempfile
 import shutil
 import pkg_resources
+import pkg_resources
+import shutil
 
 app = QApplication([])
 app.setStyleSheet("""
@@ -79,7 +81,7 @@ class DashboardWindow(QMainWindow):
         layout.addWidget(run_third_script_button)
 
         # Add a button for the DataSummary script
-        run_data_summary_script_button = QPushButton('Run DataSummary')
+        run_data_summary_script_button = QPushButton('Run CreateITOADashboard')
         run_data_summary_script_button.clicked.connect(self.run_data_summary_script)
         run_data_summary_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         run_data_summary_script_button.setFont(font)
@@ -151,21 +153,14 @@ class DashboardWindow(QMainWindow):
         
     def run_data_summary_script(self):
         try:
-            # Create a temporary directory
-            with tempfile.TemporaryDirectory() as temp_dir:
-                # Extract the PowerShell script to the temporary directory
-                script_path = pkg_resources.resource_filename(__name__, 'scripts/DataSummary.ps1')
-                temp_script_path = shutil.copy(script_path, temp_dir)
+            # Get the path to the Excel file inside the executable
+            excel_file_path = pkg_resources.resource_filename(__name__, 'excel/ITOA_ProblemsDashboard.xlsx')
 
-                # Run the DataSummary script
-                process = subprocess.Popen(['powershell.exe', temp_script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                output, error = process.communicate()
-                if process.returncode != 0:
-                    logging.error(f"Error running DataSummary script: {error.decode('utf-8')}")
-                    raise Exception(f"Script returned non-zero exit status {process.returncode}")
+            # Copy the Excel file to C:\ITOA
+            shutil.copy(excel_file_path, 'C:\\ITOA\\ITOA_ProblemsDashboard.xlsx')
         except Exception as e:
             logging.exception("Exception occurred: ")
-            raise e    
+            raise e   
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
