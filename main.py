@@ -71,12 +71,19 @@ class DashboardWindow(QMainWindow):
         run_second_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         run_second_script_button.setFont(font)  # Set the font of the button
         layout.addWidget(run_second_script_button)
-        
+
         run_third_script_button = QPushButton('Run Get-UserComputer')
         run_third_script_button.clicked.connect(self.run_third_script)
         run_third_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         run_third_script_button.setFont(font)
         layout.addWidget(run_third_script_button)
+
+        # Add a button for the DataSummary script
+        run_data_summary_script_button = QPushButton('Run DataSummary')
+        run_data_summary_script_button.clicked.connect(self.run_data_summary_script)
+        run_data_summary_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        run_data_summary_script_button.setFont(font)
+        layout.addWidget(run_data_summary_script_button)
 
         container = QWidget()
         container.setLayout(layout)
@@ -142,6 +149,23 @@ class DashboardWindow(QMainWindow):
             logging.exception("Exception occurred: ")
             raise e      
         
+    def run_data_summary_script(self):
+        try:
+            # Create a temporary directory
+            with tempfile.TemporaryDirectory() as temp_dir:
+                # Extract the PowerShell script to the temporary directory
+                script_path = pkg_resources.resource_filename(__name__, 'scripts/DataSummary.ps1')
+                temp_script_path = shutil.copy(script_path, temp_dir)
+
+                # Run the DataSummary script
+                process = subprocess.Popen(['powershell.exe', temp_script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                output, error = process.communicate()
+                if process.returncode != 0:
+                    logging.error(f"Error running DataSummary script: {error.decode('utf-8')}")
+                    raise Exception(f"Script returned non-zero exit status {process.returncode}")
+        except Exception as e:
+            logging.exception("Exception occurred: ")
+            raise e    
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
