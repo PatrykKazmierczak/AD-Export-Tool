@@ -3,12 +3,15 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import QFont
+import logging
 import csv
 import os
 import pandas as pd
 import subprocess
 import csv
 import io
+
+
 
 app = QApplication([])
 app.setStyleSheet("""
@@ -119,30 +122,44 @@ class DashboardWindow(QMainWindow):
         container.setLayout(layout)
         self.setCentralWidget(container)
 
+    # Set up logging
+    logging.basicConfig(filename='debug.txt', level=logging.DEBUG)
 
     def run_first_script(self):
+        try:
             # Run the first script and get the output
             output = subprocess.check_output(['powershell.exe', './scripts/Get-ADComputersExportToSQL.ps1'])
             # Show the output in a new window
             self.output_window = OutputWindow(output.decode('utf-8'))
             self.output_window.show()
             return output.decode('utf-8')
+        except Exception as e:
+            logging.exception("Error running first script: ")
+            raise e
 
     def run_second_script(self):
+        try:
             # Run the second script and get the output
-            output = subprocess.check_output(['powershell.exe', './scripts/Get-AD-UsersExportToSQLOnPremUpdate.ps1'])
+            output = subprocess.check_output(['powershell.exe', './scripts/Get-ADUsersExportToSQLOnPremUpdate.ps1'])
             # Show the output in a new window
             self.output_window = OutputWindow(output.decode('utf-8'))
             self.output_window.show()
             return output.decode('utf-8')    
+        except Exception as e:
+            logging.exception("Error running second script: ")
+            raise e
 
     def run_third_script(self):
+        try:
             # Run the third script and get the output
             output = subprocess.check_output(['powershell.exe', './scripts/Get-UserComputerInfo.ps1'])
             # Show the output in a new window
             self.output_window = OutputWindow(output.decode('utf-8'))
             self.output_window.show()
             return output.decode('utf-8')    
+        except Exception as e:
+            logging.exception("Error running third script: ")
+            raise e   
 
     def export_first_script(self):
         try:

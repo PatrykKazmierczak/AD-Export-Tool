@@ -1,0 +1,11 @@
+ERROR:root:Error running second script: 
+Traceback (most recent call last):
+  File "c:\AD-Export-Tool\main.py", line 143, in run_second_script
+    output = subprocess.check_output(['powershell.exe', './scripts/Get-AD-UsersExportToSQLOnPremUpdate.ps1'])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['powershell.exe', './scripts/Get-AD-UsersExportToSQLOnPremUpdate.ps1']' returned non-zero exit status 1.
