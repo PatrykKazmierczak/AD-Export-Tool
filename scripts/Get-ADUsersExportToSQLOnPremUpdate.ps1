@@ -197,120 +197,13 @@ foreach ($user in $users) {
     }
 }
 
-
-<#Connect and cleanup the AD table
-	Connection remains open for writting#>
-$SQLCON = New-Object System.Data.SqlClient.SqlConnection("Data Source=$SQLSRVR; `
-			Initial Catalog=$DB;Integrated Security=SSPI")
-	$SQLCON.open()
-		$SQL = $SQLCON.CreateCommand() 
-
-	$SQL.CommandText ="DROP TABLE $TABLE"
-#############################################
-# Try and Catch error for SQL execute Command#
-##############################################
-    Try{
-        $ErrorActionPreference = "Stop";
-        $exec = $SQL.ExecuteNonQuery() > $null
-    }Catch{
-        $ErrorMessage = $_.Exception.Message
-        Write-Output "Error : $ErrorMessage For Command " $SQL.CommandText >> $logFile
-
-    }Finally{$ErrorActionPreference = "Continue";}	
-				
-		$SQL.CommandText = $CREATE
-##############################################
-# Try and Catch error for SQL execute Command#
-##############################################
-    Try{
-        $ErrorActionPreference = "Stop";
-        $exec = $SQL.ExecuteNonQuery() > $null
-    }Catch{
-        $ErrorMessage = $_.Exception.Message
-        Write-Output "Error : $ErrorMessage For Command " $SQL.CommandText >> $logFile
-
-    }Finally{$ErrorActionPreference = "Continue";}	
-
-
-<#Begin loop through the ADARRAY for
-	Variables and begin inserting Rows to table#>
-	$X = 0
-ForEach($result in $results){
-	
-    $1  = $Result.samAccountName
-	$2  = $Result.UserPrincipalName
-    $3  = $Result.DisplayName
-    $4  = $Result.givenName
-    $5  = $Result.Surname
-    $6  = $Result.Title
-    $7  = $Result.Description
-    $8  = $Result.Department
-    $9  = $Result.Company
-    $10 = $Result.Office
-    $11 = $Result.Manager
-    $12 = $Result.ManagerUPN
-	$13 = $Result.StreetAddress
-    $14 = $Result.City 
-    $15 = $Result.State
-    $16 = $Result.PostalCode
-    $17 = $Result.CountryCode
-    $18	= $Result.Country
-    $19 = $Result.EmailAddress
-    $20 = $Result.OfficePhone
-    $21 = $Result.HomePhone
-    $22 = $Result.Mobile
-    $23 = $Result.FAX
-    $24 = $Result.EmployeeID
-    $25 = $Result.EmployeeNumber
-    $26 = $Result.HomeDirectory
-    $27 = $Result.HomeDrive
-    $28 = $Result.whenCreated
-    $29 = $Result.whenChanged
-    $30 = $Result.LastBadPasswordAttempt
-    $31 = $Result.LastLogonDate
-    $32 = $Result.PasswordLastSet
-    $33 = $Result.PasswordExpired
-    $34 = $Result.PasswordNeverExpires
-    $35 = $Result.Enabled
-    $36 = $Result.DistinguishedName
-    $37 = $Result.CanonicalName
-    
-    
-
-# removing ' from descritpion to avoid errors
-if ($3 -ne $null)
-{
-$3 = $3.Replace("'","")
-}				
-#Any Table Data to be written goes here:
-	$INSERT = "INSERT $TABLE VALUES ('$1','$2','$3','$4','$5','$6','$7','$8','$9','$10','$11','$12','$13','$14','$15','$16','$17','$18','$19','$20','$21','$22','$23','$24','$25','$26','$27','$28','$29','$30','$31','$32','$33','$34','$35','$36','$37')"
-	$SQL.CommandText = $INSERT
-
-##############################################
-# Try and Catch error for SQL execute Command#
-##############################################
-    Try{
-        $ErrorActionPreference = "Stop";
-        $exec = $SQL.ExecuteNonQuery() > $null
-    }Catch{
-        $ErrorMessage = $_.Exception.Message
-        Write-Output "Error : $ErrorMessage For Command " $SQL.CommandText >> $logFile
-
-    }Finally{$ErrorActionPreference = "Continue";}		
-
-$X = $X + 1			
+# Check if the directory exists and create it if it doesn't
+$directory = "C:\ITOA"
+if (!(Test-Path $directory)) {
+    New-Item -ItemType Directory -Path $directory
 }
 
-$Res = "$X Records were written to $TABLE in database $DB"  >> $logFile
-<#Cleanup variables and close connections#>
-$SQLCON.Close()
+# Export the data to a CSV file
+$results | Export-Csv -Path "$directory\Get-ADUsers.csv" -NoTypeInformation
 
-###############################################################################
 
-$PSEmailServer = "compinfainsa-com.mail.protection.outlook.com"         # mail server name
-$smtpPort = 25
-$emailfrom = "itoa@compinfainsa.com"   # doesn't have to be real email, just in the form name@domain.ext
-$emailto = "mferrazzi@compinfainsa.com"    
-
-# email report file
-Send-MailMessage -To $emailto -From "$emailfrom" -Subject "ITOA: Loading AD Users to SRV-AD-POLSKA\SQLEXPRESS01" -Attachments $logFile
