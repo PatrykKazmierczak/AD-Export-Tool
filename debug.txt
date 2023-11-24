@@ -1,0 +1,10 @@
+ERROR:root:Exception occurred: 
+Traceback (most recent call last):
+  File "c:\AD-Export-Tool\dashboard_window.py", line 206, in run_data_summary_script
+    raise ValueError(f"CSV file {csv_file_path} does not exist or is empty")
+ValueError: CSV file C:\ITOA\Get-ADComputers.csv does not exist or is empty
+ERROR:root:Exception occurred: 
+Traceback (most recent call last):
+  File "c:\AD-Export-Tool\dashboard_window.py", line 216, in run_data_summary_script
+    raise ValueError(f"CSV file {csv_file_path} does not exist or is empty")
+ValueError: CSV file C:\ITOA\Get-ADComputers.csv does not exist or is empty
