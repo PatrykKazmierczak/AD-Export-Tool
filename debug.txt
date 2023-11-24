@@ -1,6 +1,0 @@
-ERROR:root:Exception occurred: 
-Traceback (most recent call last):
-  File "c:\AD-Export-Tool\dashboard_window.py", line 121, in run_data_summary_script
-    excel_file_path = pkg_resources.resource_filename(__name__, 'excel/ITOA_ProblemsDashboard.xlsx')
-                      ^^^^^^^^^^^^^
-NameError: name 'pkg_resources' is not defined
