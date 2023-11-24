@@ -7,7 +7,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Set window properties
-        self.setWindowTitle("✨ AD-Tool ✨")
+        self.setWindowTitle("ITOA  ActiveDirectory  Tool ")
         self.setWindowIcon(QIcon('./icons/microsoft-active-directory5035.jpg'))
 
         # Set up layout and widgets

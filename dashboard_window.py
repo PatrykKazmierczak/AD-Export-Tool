@@ -16,7 +16,7 @@ class DashboardWindow(QMainWindow):
         super().__init__()
 
         # Set window title and icon
-        self.setWindowTitle("AD-Tool")
+        self.setWindowTitle("ITOA  ActiveDirectory  Tool")
         self.setWindowIcon(QIcon('./icons/microsoft-active-directory5035.jpg'))
 
         # Create a QFont object
@@ -26,31 +26,37 @@ class DashboardWindow(QMainWindow):
         self.ribbon = QTabWidget()  
 
         # Create the first button and connect it to the first script
-        run_first_script_button = QPushButton('Run Get-ADComputersExport')
+        run_first_script_button = QPushButton('Run Get-AD-Computers-Export')
         run_first_script_button.clicked.connect(self.run_first_script)
         run_first_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         run_first_script_button.setFont(font)
 
         # Create the second button and connect it to the second script
-        run_second_script_button = QPushButton('Run Get-ADUsersExport')
+        run_second_script_button = QPushButton('Run Get-AD-Users-Export')
         run_second_script_button.clicked.connect(self.run_second_script)
         run_second_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         run_second_script_button.setFont(font)
 
         # Create the third button and connect it to the third script
-        run_third_script_button = QPushButton('Run Get-UserComputer')
+        run_third_script_button = QPushButton('Run Get-User-Computer')
         run_third_script_button.clicked.connect(self.run_third_script)
         run_third_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         run_third_script_button.setFont(font)
 
         # Create the fourth button and connect it to the fourth script
-        run_data_summary_script_button = QPushButton('Run CreateITOADashboard')
+        run_data_summary_script_button = QPushButton('Run Create-ITOA-Dashboard')
         run_data_summary_script_button.clicked.connect(self.run_data_summary_script)
         run_data_summary_script_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         run_data_summary_script_button.setFont(font)
         
+        # Create the Send-AD-Status button and connect it to the appropriate method
+        send_ad_status_button = QPushButton('Send-AD-Status')
+        send_ad_status_button.clicked.connect(self.send_ad_status)
+        send_ad_status_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        send_ad_status_button.setFont(font)
+        
         # Create the clear console button and connect it to the clear console method
-        clear_console_button = QPushButton('Clear Console')
+        clear_console_button = QPushButton('Clear-Console')
         clear_console_button.clicked.connect(self.clear_console)
         clear_console_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         clear_console_button.setFont(font)
@@ -64,6 +70,7 @@ class DashboardWindow(QMainWindow):
         buttons_layout.addWidget(run_third_script_button)
         buttons_layout.addWidget(run_data_summary_script_button)
         buttons_layout.addWidget(clear_console_button)
+        buttons_layout.addWidget(send_ad_status_button)
         
         # Create a QPlainTextEdit object
         self.console = QPlainTextEdit()
@@ -186,14 +193,6 @@ class DashboardWindow(QMainWindow):
             self.console.appendPlainText("Exception: " + str(e))
             raise e           
         
-    # Define the method to run the data summary script
-    
-
-    # Define the method to run the data summary script
-    
-
-    
-
     def run_data_summary_script(self):
         self.console.appendPlainText("Running data summary script...")
         try:
@@ -233,3 +232,7 @@ class DashboardWindow(QMainWindow):
             # Show an error message to the user
             error_dialog = QtWidgets.QErrorMessage()
             error_dialog.showMessage('Oh no!')
+            
+    def send_ad_status(self):
+        self.console.appendPlainText("Sending AD status...")
+        # Add your code to send the AD status here        

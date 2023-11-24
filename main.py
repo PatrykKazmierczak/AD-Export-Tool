@@ -9,7 +9,13 @@ app = QApplication([])
 
 # Open the CSS file and set it as the application style sheet
 with open('styles/styles.css', 'r') as f:
-    app.setStyleSheet(f.read())
+    stylesheet = f.read()
+
+# Append the text-align style to the style sheet
+stylesheet += 'QPushButton { text-align: left; }'
+
+# Set the style sheet
+app.setStyleSheet(stylesheet)
 
 # Create a MainWindow instance and show it
 window = MainWindow()
