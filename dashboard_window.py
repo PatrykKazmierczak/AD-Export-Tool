@@ -95,6 +95,11 @@ class DashboardWindow(QMainWindow):
         clear_console_button.clicked.connect(self.clear_console)
         clear_console_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         clear_console_button.setFont(font)
+        
+        extract_users_from_azure_ad_button = QPushButton('Run Extract-Users-From-AzureAD')
+        extract_users_from_azure_ad_button.clicked.connect(self.run_extract_users_from_azure_ad_script)
+        extract_users_from_azure_ad_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        extract_users_from_azure_ad_button.setFont(font)
 
         # Create a QVBoxLayout object for the buttons
         buttons_layout = QVBoxLayout()
@@ -106,6 +111,7 @@ class DashboardWindow(QMainWindow):
         buttons_layout.addWidget(run_data_summary_script_button)
         buttons_layout.addWidget(clear_console_button)
         buttons_layout.addWidget(send_ad_status_button)
+        buttons_layout.addWidget(extract_users_from_azure_ad_button)
         
         # Create a QPlainTextEdit object
         self.console = QPlainTextEdit()
@@ -268,6 +274,37 @@ class DashboardWindow(QMainWindow):
             error_dialog = QtWidgets.QErrorMessage()
             error_dialog.showMessage('Oh no!')
             
+    def run_extract_users_from_azure_ad_script(self):
+        self.console.appendPlainText("Running script Extract-Users-From-AzureAD...")
+        try:
+            # Create a temporary directory
+            with tempfile.TemporaryDirectory() as temp_dir:
+                # Extract the PowerShell script to the temporary directory
+                script_path = pkg_resources.resource_filename(__name__, 'scripts/Get-Exctract-Users-From-AzureAD.ps1')
+                temp_script_path = shutil.copy(script_path, temp_dir)
+
+                # Run the script using subprocess
+                process = subprocess.Popen(['powershell.exe', temp_script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                output, error = process.communicate()
+
+                # Write the output and errors to the console
+                self.console.appendPlainText(output.decode('utf-8'))
+                if error:
+                    self.console.appendPlainText("Error: " + error.decode('utf-8'))
+
+                # If the script returns a non-zero exit status, log the error and raise an exception
+                if process.returncode != 0:
+                    logging.error(f"Error running script: {error.decode('utf-8')}")
+                    raise Exception(f"Script returned non-zero exit status {process.returncode}")
+
+            # If the script runs successfully, print the success message
+            self.console.appendPlainText("CSV file generated successfully.")
+        except Exception as e:
+            # If an exception occurs, log the exception and re-raise it
+            logging.exception("Exception occurred: ")
+            self.console.appendPlainText("Exception: " + str(e))
+            raise e       
+         
     def send_ad_status(self):
         self.console.appendPlainText("Sending AD status...")
         # Add your code to send the AD status here        
