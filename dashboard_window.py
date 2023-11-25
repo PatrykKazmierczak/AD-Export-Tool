@@ -10,20 +10,55 @@ from PyQt5.QtWidgets import QTabWidget, QVBoxLayout
 import pandas as pd
 import os
 from PyQt5 import QtWidgets
+import platform
+import socket
+import psutil
+from PyQt5.QtWidgets import QLabel
 
 class DashboardWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
-        # Set window title and icon
+        
+         # Set window title and icon
         self.setWindowTitle("ITOA  ActiveDirectory  Tool")
         self.setWindowIcon(QIcon('./icons/microsoft-active-directory5035.jpg'))
+
+        # Create a QMenuBar
+        menu_bar = self.menuBar()
+
+        # Create the menus
+        file_menu = menu_bar.addMenu('File')
+        edit_menu = menu_bar.addMenu('Edit')
+        view_menu = menu_bar.addMenu('View')
+        go_menu = menu_bar.addMenu('Go')
+        tools_menu = menu_bar.addMenu('Tools')
+        settings_menu = menu_bar.addMenu('Settings')
+        help_menu = menu_bar.addMenu('Help')
 
         # Create a QFont object
         font = QFont("Arial", 14)
 
         # Create a QTabWidget for the ribbon
-        self.ribbon = QTabWidget()  
+        self.ribbon = QTabWidget()
+        
+        # Get the server/computer data
+        os_info = f"OS: {platform.system()} {platform.release()}"
+        hostname = f"Hostname: {socket.gethostname()}"
+        ip_address = f"IP: {socket.gethostbyname(socket.gethostname())}"
+        cpu_info = f"CPU: {platform.processor()}"
+        total_memory = f"Total Memory: {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)} GB"
+        disk_usage = psutil.disk_usage('/')
+        total_disk_space = f"Total Disk Space: {round(disk_usage.total / (1024.0 ** 3), 2)} GB"
+        free_disk_space = f"Free Disk Space: {round(disk_usage.free / (1024.0 ** 3), 2)} GB"
+        # Drive info and adapter info would require additional code to retrieve
+
+        # Create a QLabel for the server/computer data
+        server_data_label = QLabel()
+        server_data_label.setText(f"{os_info}, {hostname}, {ip_address}, {cpu_info}, {total_memory}, {total_disk_space}, {free_disk_space}")
+        server_data_label.setStyleSheet("color: black;")  # Set the text color to black 
+
+        # Add the server_data_label to the ribbon
+        self.ribbon.addTab(server_data_label, "Server Data")
 
         # Create the first button and connect it to the first script
         run_first_script_button = QPushButton('Run Get-AD-Computers-Export')
@@ -50,13 +85,13 @@ class DashboardWindow(QMainWindow):
         run_data_summary_script_button.setFont(font)
         
         # Create the Send-AD-Status button and connect it to the appropriate method
-        send_ad_status_button = QPushButton('Send-AD-Status')
+        send_ad_status_button = QPushButton('Run Send-AD-Status')
         send_ad_status_button.clicked.connect(self.send_ad_status)
         send_ad_status_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         send_ad_status_button.setFont(font)
         
         # Create the clear console button and connect it to the clear console method
-        clear_console_button = QPushButton('Clear-Console')
+        clear_console_button = QPushButton('Run Clear-Console')
         clear_console_button.clicked.connect(self.clear_console)
         clear_console_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         clear_console_button.setFont(font)
