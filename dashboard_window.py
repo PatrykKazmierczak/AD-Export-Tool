@@ -14,6 +14,21 @@ import platform
 import socket
 import psutil
 from PyQt5.QtWidgets import QLabel
+import datetime
+import logging
+import pkg_resources
+import shutil
+import sqlite3
+import subprocess
+import tempfile
+import pkg_resources
+import sqlite3
+import tempfile
+import pkg_resources
+import shutil
+import subprocess
+import logging
+
 
 class DashboardWindow(QMainWindow):
     def __init__(self):
@@ -206,6 +221,7 @@ class DashboardWindow(QMainWindow):
             raise e
 
     # Define the method to run the third script
+
     def run_third_script(self):
         self.console.appendPlainText("Running third script Get-UserComputerInfo ...")
         try:
@@ -217,22 +233,78 @@ class DashboardWindow(QMainWindow):
                 output, error = process.communicate()
 
                 # Write the output and errors to the console
-                self.console.appendPlainText(output.decode('utf-8'))
+                self.console.appendPlainText(output.decode('utf-8', errors='replace'))
                 if error:
-                    self.console.appendPlainText("Error: " + error.decode('utf-8'))
+                    self.console.appendPlainText("Error: " + error.decode('utf-8', errors='replace'))
+
+                # Print the output before parsing
+                print("Output:", output)
+
+                # Connect to the SQLite database
+                conn = sqlite3.connect('database.db')
+
+                # Create the table if it doesn't exist
+                self.create_table_if_not_exists(conn)
+                
+                # Parse the output data
+                data = self.parse_output(output)
+                
+                # Insert the data into the database
+                self.insert_data_into_database(conn, data)
+
+                # Print the data after parsing
+                print("Parsed data:", data)
+
+                # Query the database after inserting
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM my_table")
+                rows = cursor.fetchall()
+                print("Database rows:", rows)
 
                 # If the script returns a non-zero exit status, log the error and raise an exception
                 if process.returncode != 0:
                     logging.error(f"Error running third script: {error.decode('utf-8')}")
                     raise Exception(f"Script returned non-zero exit status {process.returncode}")
 
-            # If the script runs successfully, print the success message
-            self.console.appendPlainText("CSV file generated successfully.")
+                # If the script runs successfully, print the success message
+                self.console.appendPlainText("Data saved in SQLite database successfully.")
         except Exception as e:
             # If an exception occurs, log the exception and re-raise it
             logging.exception("Exception occurred: ")
             self.console.appendPlainText("Exception: " + str(e))
-            raise e           
+            raise e
+
+    def parse_output(self, output):
+        # Decode the output and split it into a list of values
+        data = output.decode('utf-8').strip().split(',')
+        
+        # Fill missing values with None
+        while len(data) < 6:
+            data.append(None)
+        
+        return data 
+
+    def insert_data_into_database(self, conn, data):
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO my_table (Username, OS, CPU, TotalMemoryGB, DriveInfo, AdapterInfo) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, data)
+        conn.commit()
+
+    def create_table_if_not_exists(self, conn):
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS my_table (
+                Username TEXT,
+                OS TEXT,
+                CPU TEXT,
+                TotalMemoryGB TEXT,
+                DriveInfo TEXT,
+                AdapterInfo TEXT
+            )
+        """)
+        conn.commit()       
         
     def run_data_summary_script(self):
         self.console.appendPlainText("Running data summary script...")
@@ -280,7 +352,7 @@ class DashboardWindow(QMainWindow):
             # Create a temporary directory
             with tempfile.TemporaryDirectory() as temp_dir:
                 # Extract the PowerShell script to the temporary directory
-                script_path = pkg_resources.resource_filename(__name__, 'scripts/Get-Exctract-Users-From-AzureAD.ps1')
+                script_path = pkg_resources.resource_filename(__name__, 'scripts/Get-Extract-Users-From-AzureAD.ps1')
                 temp_script_path = shutil.copy(script_path, temp_dir)
 
                 # Run the script using subprocess
@@ -303,8 +375,8 @@ class DashboardWindow(QMainWindow):
             # If an exception occurs, log the exception and re-raise it
             logging.exception("Exception occurred: ")
             self.console.appendPlainText("Exception: " + str(e))
-            raise e       
-         
+            raise e     
+     
     def send_ad_status(self):
         self.console.appendPlainText("Sending AD status...")
         # Add your code to send the AD status here        

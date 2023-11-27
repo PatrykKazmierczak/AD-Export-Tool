@@ -22,12 +22,6 @@ $driveInfo = foreach ($drive in $drives) {
     "Drive $($drive.DeviceID): Free Space: $freeSpaceGB GB, Total Space: $totalSpaceGB GB"
 }
 
-# Get information about the computer's network adapters
-$adapters = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IPAddress -ne $null }
-$adapterInfo = foreach ($adapter in $adapters) {
-    "Network Adapter $($adapter.Description): IP Address: $($adapter.IPAddress[0]), MAC Address: $($adapter.MACAddress)"
-}
-
 # Create a custom object with the information
 $result = [PSCustomObject] @{
     Username = $username
@@ -41,5 +35,8 @@ $result = [PSCustomObject] @{
 # Add the result to the results array
 $results += $result
 
-# Export the results to a CSV file
-$results | Export-Csv -Path "C:\ITOA\ComputerInfo.csv" -NoTypeInformation
+# Convert the results to a comma-separated string
+$data_string = $results | Out-String
+
+# Output the data string to the console
+Write-Output $data_string
