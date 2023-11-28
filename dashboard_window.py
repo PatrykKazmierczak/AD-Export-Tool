@@ -171,9 +171,33 @@ class DashboardWindow(QMainWindow):
                 output, error = process.communicate()
 
                 # Write the output and errors to the console
-                self.console.appendPlainText(output.decode('utf-8'))
+                self.console.appendPlainText(output.decode('utf-8', errors='replace'))
                 if error:
-                    self.console.appendPlainText("Error: " + error.decode('utf-8'))
+                    self.console.appendPlainText("Error: " + error.decode('utf-8', errors='replace'))
+
+                # Print the output before parsing
+                print("Output:", output)
+
+                # Create a connection to the database
+                conn = sqlite3.connect('database.db')
+
+                # Create the table if it doesn't exist
+                self.create_table_if_not_exists1(conn)
+
+                # Parse the output data
+                data = self.parse_output1(output)
+
+                # Insert the data into the database
+                self.insert_data_into_database1(conn, data)
+
+                # Print the data after parsing
+                print("Parsed data:", data)
+
+                # Query the database after inserting
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM ad_computers")
+                rows = cursor.fetchall()
+                print("Database rows:", rows)
 
                 # If the script returns a non-zero exit status, log the error and raise an exception
                 if process.returncode != 0:
@@ -181,13 +205,59 @@ class DashboardWindow(QMainWindow):
                     raise Exception(f"Script returned non-zero exit status {process.returncode}")
 
             # If the script runs successfully, print the success message
-            self.console.appendPlainText("CSV file generated successfully.")
+            self.console.appendPlainText("Data saved in SQLite database successfully.")
         except Exception as e:
             # If an exception occurs, log the exception and re-raise it
             logging.exception("Exception occurred: ")
             self.console.appendPlainText("Exception: " + str(e))
             raise e
+        
+    def parse_output1(self, output):
+        # Decode the output and split it into a list of values
+        data = output.decode('utf-8').strip().split(',')
+        
+        # Fill missing values with None
+        while len(data) < 18:
+            data.append(None)
+        
+        return data 
 
+    def insert_data_into_database1(self, conn, data):
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO ad_computers (Name, DNSHostName, Description, Enabled, OperatingSystem, OperatingSystemServicePack, OperatingSystemVersion, Location, UserAccountControl, PasswordLastSet, WhenCreated, WhenChanged, LastLogonTimestampDT, ManagedBy, Owner, CanonicalName, DistinguishedName, AdditionalColumn) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, data)
+        conn.commit()
+
+    def create_table_if_not_exists1(self, conn):
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS ad_computers (
+                Name TEXT,
+                DNSHostName TEXT,
+                Description TEXT,
+                Enabled TEXT,
+                OperatingSystem TEXT,
+                OperatingSystemServicePack TEXT,
+                OperatingSystemVersion TEXT,
+                Location TEXT,
+                UserAccountControl TEXT,
+                PasswordLastSet TEXT,
+                WhenCreated TEXT,
+                WhenChanged TEXT,
+                LastLogonTimestampDT TEXT,
+                ManagedBy TEXT,
+                Owner TEXT,
+                CanonicalName TEXT,
+                DistinguishedName TEXT,
+                AdditionalColumn TEXT
+            )
+        """)
+        conn.commit()
+        
+    ###########################################################################################################################################################    
+        
     # Define the method to run the second script
     def run_second_script(self):
         self.console.appendPlainText("Running second script Get-ADUsersExportToSQLOnPremUpdate...")
@@ -203,9 +273,33 @@ class DashboardWindow(QMainWindow):
                 output, error = process.communicate()
 
                 # Write the output and errors to the console
-                self.console.appendPlainText(output.decode('utf-8'))
+                self.console.appendPlainText(output.decode('utf-8', errors='replace'))
                 if error:
-                    self.console.appendPlainText("Error: " + error.decode('utf-8'))
+                    self.console.appendPlainText("Error: " + error.decode('utf-8', errors='replace'))
+
+                # Print the output before parsing
+                print("Output:", output)
+
+                # Create a connection to the database
+                conn = sqlite3.connect('database.db')
+
+                # Create the table if it doesn't exist
+                self.create_table_if_not_exists2(conn)
+
+                # Parse the output data
+                data = self.parse_output2(output)
+
+                # Insert the data into the database
+                self.insert_data_into_database2(conn, data)
+
+                # Print the data after parsing
+                print("Parsed data:", data)
+
+                # Query the database after inserting
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM ad_users")
+                rows = cursor.fetchall()
+                print("Database rows:", rows)
 
                 # If the script returns a non-zero exit status, log the error and raise an exception
                 if process.returncode != 0:
@@ -213,14 +307,83 @@ class DashboardWindow(QMainWindow):
                     raise Exception(f"Script returned non-zero exit status {process.returncode}")
 
             # If the script runs successfully, print the success message
-            self.console.appendPlainText("CSV file generated successfully.")
+            self.console.appendPlainText("Data saved in SQLite database successfully.")
         except Exception as e:
             # If an exception occurs, log the exception and re-raise it
             logging.exception("Exception occurred: ")
             self.console.appendPlainText("Exception: " + str(e))
             raise e
 
+    def parse_output2(self, output):
+        # Decode the output and split it into a list of values
+        data = output.decode('utf-8').strip().split(',')
+        
+        # The number of columns in the ad_users table
+        num_columns = 39
+
+        # Fill missing values with None
+        while len(data) < num_columns:
+            data.append(None)
+        
+        return data 
+
+    def insert_data_into_database2(self, conn, data):
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO ad_users (UserName, SamAccountName, UserPrincipalName, DisplayName, Name, Surname, Title, Description, Department, Company, Office, ManagerName, ManagerUPN, StreetAddress, City, State, PostalCode, CountryCode, Country, EmailAddress, OfficePhone, HomePhone, Mobile, FAX, EmployeeID, EmployeeNumber, HomeDirectory, HomeDrive, WhenCreated, WhenChanged, LastBadPasswordAttempt, LastLogonDate, PasswordLastSet, PasswordExpired, PasswordNeverExpires, Enabled, DistinguishedName, CanonicalName, AccountExpirationDate) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, data)
+        conn.commit()
+
+    def create_table_if_not_exists2(self, conn):
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS ad_users (
+                UserName TEXT,
+                SamAccountName TEXT,
+                UserPrincipalName TEXT,
+                DisplayName TEXT,
+                Name TEXT,
+                Surname TEXT,
+                Title TEXT,
+                Description TEXT,
+                Department TEXT,
+                Company TEXT,
+                Office TEXT,
+                ManagerName TEXT,
+                ManagerUPN TEXT,
+                StreetAddress TEXT,
+                City TEXT,
+                State TEXT,
+                PostalCode TEXT,
+                CountryCode TEXT,
+                Country TEXT,
+                EmailAddress TEXT,
+                OfficePhone TEXT,
+                HomePhone TEXT,
+                Mobile TEXT,
+                FAX TEXT,
+                EmployeeID TEXT,
+                EmployeeNumber TEXT,
+                HomeDirectory TEXT,
+                HomeDrive TEXT,
+                WhenCreated TEXT,
+                WhenChanged TEXT,
+                LastBadPasswordAttempt TEXT,
+                LastLogonDate TEXT,
+                PasswordLastSet TEXT,
+                PasswordExpired TEXT,
+                PasswordNeverExpires TEXT,
+                Enabled TEXT,
+                DistinguishedName TEXT,
+                CanonicalName TEXT,
+                AccountExpirationDate TEXT
+            )
+        """)
+        conn.commit()
     # Define the method to run the third script
+    
+    ###########################################################################################################################################################
 
     def run_third_script(self):
         self.console.appendPlainText("Running third script Get-UserComputerInfo ...")

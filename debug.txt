@@ -1,42 +1,35 @@
 ERROR:root:Exception occurred: 
 Traceback (most recent call last):
-  File "c:\AD-Export-Tool\dashboard_window.py", line 253, in run_third_script
-    self.insert_data_into_database(conn, data)
-  File "c:\AD-Export-Tool\dashboard_window.py", line 284, in insert_data_into_database
+  File "c:\AD-Export-Tool\dashboard_window.py", line 191, in run_first_script
+    self.insert_data_into_database1(conn, data)
+  File "c:\AD-Export-Tool\dashboard_window.py", line 227, in insert_data_into_database1
     cursor.execute("""
-sqlite3.OperationalError: table my_table has no column named Username
+sqlite3.OperationalError: table ad_computers has no column named AdditionalColumn
 ERROR:root:Exception occurred: 
 Traceback (most recent call last):
-  File "c:\AD-Export-Tool\dashboard_window.py", line 253, in run_third_script
-    self.insert_data_into_database(conn, data)
-  File "c:\AD-Export-Tool\dashboard_window.py", line 284, in insert_data_into_database
+  File "c:\AD-Export-Tool\dashboard_window.py", line 191, in run_first_script
+    self.insert_data_into_database1(conn, data)
+  File "c:\AD-Export-Tool\dashboard_window.py", line 227, in insert_data_into_database1
     cursor.execute("""
-sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 6, and there are 1 supplied.
+sqlite3.OperationalError: table ad_computers has no column named AdditionalColumn
 ERROR:root:Exception occurred: 
 Traceback (most recent call last):
-  File "c:\AD-Export-Tool\dashboard_window.py", line 253, in run_third_script
-    self.insert_data_into_database(conn, data)
-  File "c:\AD-Export-Tool\dashboard_window.py", line 284, in insert_data_into_database
+  File "c:\AD-Export-Tool\dashboard_window.py", line 191, in run_first_script
+    self.insert_data_into_database1(conn, data)
+  File "c:\AD-Export-Tool\dashboard_window.py", line 227, in insert_data_into_database1
     cursor.execute("""
-sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 6, and there are 1 supplied.
+sqlite3.OperationalError: table ad_computers has no column named AdditionalColumn
 ERROR:root:Exception occurred: 
 Traceback (most recent call last):
-  File "c:\AD-Export-Tool\dashboard_window.py", line 253, in run_third_script
-    self.insert_data_into_database(conn, data)
-  File "c:\AD-Export-Tool\dashboard_window.py", line 284, in insert_data_into_database
+  File "c:\AD-Export-Tool\dashboard_window.py", line 191, in run_first_script
+    self.insert_data_into_database1(conn, data)
+  File "c:\AD-Export-Tool\dashboard_window.py", line 227, in insert_data_into_database1
     cursor.execute("""
-sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 6, and there are 1 supplied.
+sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 17, and there are 18 supplied.
 ERROR:root:Exception occurred: 
 Traceback (most recent call last):
-  File "c:\AD-Export-Tool\dashboard_window.py", line 253, in run_third_script
-    self.insert_data_into_database(conn, data)
-  File "c:\AD-Export-Tool\dashboard_window.py", line 292, in insert_data_into_database
+  File "c:\AD-Export-Tool\dashboard_window.py", line 191, in run_first_script
+    self.insert_data_into_database1(conn, data)
+  File "c:\AD-Export-Tool\dashboard_window.py", line 227, in insert_data_into_database1
     cursor.execute("""
-sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 6, and there are 1 supplied.
-ERROR:root:Exception occurred: 
-Traceback (most recent call last):
-  File "c:\AD-Export-Tool\dashboard_window.py", line 253, in run_third_script
-    self.insert_data_into_database(conn, data)
-  File "c:\AD-Export-Tool\dashboard_window.py", line 289, in insert_data_into_database
-    cursor.execute("""
-sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 6, and there are 8 supplied.
+sqlite3.OperationalError: table ad_computers has no column named AdditionalColumn
