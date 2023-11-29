@@ -1,0 +1,18 @@
+ERROR:root:Exception occurred: 
+Traceback (most recent call last):
+  File "c:\AD-Export-Tool\dashboard_window.py", line 192, in run_first_script
+    data = self.parse_output1(output)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\AD-Export-Tool\dashboard_window.py", line 230, in parse_output1
+    data = next(reader)
+           ^^^^^^^^^^^^
+StopIteration
+ERROR:root:Exception occurred: 
+Traceback (most recent call last):
+  File "c:\AD-Export-Tool\dashboard_window.py", line 192, in run_first_script
+    data = self.parse_output1(output)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\AD-Export-Tool\dashboard_window.py", line 230, in parse_output1
+    data = next(reader)
+           ^^^^^^^^^^^^
+StopIteration

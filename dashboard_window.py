@@ -227,20 +227,22 @@ class DashboardWindow(QMainWindow):
 
         # Use csv.reader to split the data into columns
         reader = csv.reader(io.StringIO(decoded_output), delimiter=';')
-        data = next(reader)
+        data = list(reader)
 
         # Fill missing values with None
-        while len(data) < 18:
-            data.append(None)
+        for row in data:
+            while len(row) < 18:
+                row.append(None)
 
-        return data  
+        return data
 
     def insert_data_into_database1(self, conn, data):
         cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO ad_computers (Name, DNSHostName, Description, Enabled, OperatingSystem, OperatingSystemServicePack, OperatingSystemVersion, Location, UserAccountControl, PasswordLastSet, WhenCreated, WhenChanged, LastLogonTimestampDT, ManagedBy, Owner, CanonicalName, DistinguishedName, AdditionalColumn) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, data)
+        for row in data:
+            cursor.execute("""
+                INSERT INTO ad_computers (Name, DNSHostName, Description, Enabled, OperatingSystem, OperatingSystemServicePack, OperatingSystemVersion, Location, UserAccountControl, PasswordLastSet, WhenCreated, WhenChanged, LastLogonTimestampDT, ManagedBy, Owner, CanonicalName, DistinguishedName, AdditionalColumn) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, row)
         conn.commit()
 
     def create_table_if_not_exists1(self, conn):
