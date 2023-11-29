@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('scripts/Get-ADComputersExportToSQL.ps1', 'scripts/'), ('scripts/Get-ADUsersExportToSQLOnPremUpdate.ps1', 'scripts/'), ('scripts/Get-Extract-Users-From-AzureAD.ps1', 'scripts/'), ('scripts/Get-UserComputerInfo.ps1', 'scripts/'), ('scripts/Send-Email.ps1', 'scripts/')],
+    datas=[('scripts/*', 'scripts/'), ('styles/*', 'styles/')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
