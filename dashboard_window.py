@@ -216,13 +216,16 @@ class DashboardWindow(QMainWindow):
         
     def parse_output1(self, output):
         # Decode the output and split it into a list of values
-        data = output.decode('utf-8').strip().split(',')
+        try:
+            data = output.decode('utf-8').strip().split(',')
+        except UnicodeDecodeError:
+            data = output.decode('cp1252').strip().split(',')
         
         # Fill missing values with None
         while len(data) < 18:
             data.append(None)
         
-        return data 
+        return data  
 
     def insert_data_into_database1(self, conn, data):
         cursor = conn.cursor()

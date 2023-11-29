@@ -1,39 +1,42 @@
-Function Get-ScriptDirectory
-{
-       $Invocation = (Get-Variable MyInvocation -Scope 1).Value
-       [string]$path = Split-Path $Invocation.MyCommand.Path
-       if (! $path.EndsWith("\"))
-       {
-              $path += "\"
-       }
-       return $path
+# Import the required module for Active Directory
+Import-Module ActiveDirectory
+
+# Get all computers from Active Directory
+$computers = Get-ADComputer -Filter * -Property *
+
+# Create an array to store the results
+$results = @()
+
+# Loop through each computer
+foreach ($computer in $computers) {
+    # Create a custom object with the computer's information
+    $result = [PSCustomObject] @{
+        Name = $computer.Name
+        DNSHostName = $computer.DNSHostName
+        Description = $computer.Description
+        Enabled = $computer.Enabled
+        OperatingSystem = $computer.OperatingSystem
+        OperatingSystemServicePack = $computer.OperatingSystemServicePack
+        OperatingSystemVersion = $computer.OperatingSystemVersion
+        Location = $computer.Location
+        UserAccountControl = $computer.UserAccountControl
+        PasswordLastSet = $computer.PasswordLastSet
+        WhenCreated = $computer.WhenCreated
+        WhenChanged = $computer.WhenChanged
+        LastLogonTimestampDT = $computer.LastLogonTimestampDT
+        ManagedBy = $computer.ManagedBy
+        Owner = $computer.Owner
+        CanonicalName = $computer.CanonicalName
+        DistinguishedName = $computer.DistinguishedName
+        AdditionalColumn = $computer.AdditionalColumn
+    }
+
+    # Add the result to the results array
+    $results += $result
 }
 
-$logFile = "C:\scripts\AD2SQLComputers-log.txt"
-$ScriptPath = Get-ScriptDirectory
-$Date = get-date -f dd-MM-yyyy
-$Hour = get-date -f hh:mm:ss
+# Convert the results to a comma-separated string
+$data_string = $results | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1
 
-$log = "==============================================================="  > $logFile
-$Log = $env:USERNAME + " has Started the script at $Date $Hour" >> $logFile
-$log = "==============================================================="  >> $logFile
-$log = "Script Location = $ScriptPath at $env:COMPUTERNAME"  >> $logFile
-$log = "==============================================================="  >> $logFile
-
-$ADObjects = Get-ADComputer -Filter * -Properties * |
-    Select-Object Name, DNSHostName, Description, Enabled, OperatingSystem, `
-        OperatingSystemServicePack, OperatingSystemVersion, Location, userAccountControl, PasswordLastSet, `
-        whenCreated, whenChanged, `
-        @{name="LastLogonTimestampDT";`
-            Expression={[datetime]::FromFileTimeUTC($_.LastLogonTimestamp)}}, 
-            ManagedBy,`
-        @{name="Owner";`
-            Expression={$_.nTSecurityDescriptor.Owner}}, `
-        CanonicalName, DistinguishedName
-
-$directory = "C:\ITOA"
-if (!(Test-Path $directory)) {
-    New-Item -ItemType Directory -Path $directory
-}
-
-$ADObjects | Export-Csv -Path "$directory\Get-ADComputers.csv" -NoTypeInformation
+# Output the data string to the console
+Write-Output $data_string
