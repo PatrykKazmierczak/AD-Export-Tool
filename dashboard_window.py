@@ -31,8 +31,10 @@ import logging
 
 
 class DashboardWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, conn):
         super().__init__()
+        self.conn = conn
+        
         
          # Set window title and icon
         self.setWindowTitle("ITOA  ActiveDirectory  Tool")
@@ -179,7 +181,7 @@ class DashboardWindow(QMainWindow):
                 print("Output:", output)
 
                 # Create a connection to the database
-                conn = sqlite3.connect('database.db')
+                conn = self.conn
 
                 # Create the table if it doesn't exist
                 self.create_table_if_not_exists1(conn)
@@ -281,7 +283,7 @@ class DashboardWindow(QMainWindow):
                 print("Output:", output)
 
                 # Create a connection to the database
-                conn = sqlite3.connect('database.db')
+                conn = self.conn
 
                 # Create the table if it doesn't exist
                 self.create_table_if_not_exists2(conn)
@@ -404,7 +406,7 @@ class DashboardWindow(QMainWindow):
                 print("Output:", output)
 
                 # Connect to the SQLite database
-                conn = sqlite3.connect('database.db')
+                conn = self.conn
 
                 # Create the table if it doesn't exist
                 self.create_table_if_not_exists(conn)

@@ -3,8 +3,9 @@ from PyQt5.QtGui import QIcon
 from dashboard_window import DashboardWindow
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, conn):
         super().__init__()
+        self.conn = conn
 
         # Set window properties
         self.setWindowTitle("ITOA  ActiveDirectory  Tool ")
@@ -37,7 +38,7 @@ class MainWindow(QMainWindow):
 
         if username == 'admin' and password == 'password':
             self.hide()
-            self.dashboard_window = DashboardWindow()
+            self.dashboard_window = DashboardWindow(self.conn)
             self.dashboard_window.show()
         else:
             print('Access denied')

@@ -1,5 +1,6 @@
 import sys
 import os
+import sqlite3
 
 # Import necessary modules from PyQt5
 from PyQt5.QtWidgets import QApplication
@@ -29,8 +30,20 @@ stylesheet += 'QPushButton { text-align: left; }'
 # Set the style sheet
 app.setStyleSheet(stylesheet)
 
+# Define the directory where you want to save the database
+db_dir = 'C:/ITOA'
+
+# Ensure the directory exists
+os.makedirs(db_dir, exist_ok=True)
+
+# Define the full path to the database file
+db_path = os.path.join(db_dir, 'database.db')
+
+# Create a connection to the database
+conn = sqlite3.connect(db_path)
+
 # Create a MainWindow instance and show it
-window = MainWindow()
+window = MainWindow(conn)
 window.show()
 
 # Start the application's event loop
