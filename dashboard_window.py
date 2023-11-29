@@ -28,6 +28,8 @@ import pkg_resources
 import shutil
 import subprocess
 import logging
+import csv
+import io
 
 
 class DashboardWindow(QMainWindow):
@@ -214,17 +216,23 @@ class DashboardWindow(QMainWindow):
             self.console.appendPlainText("Exception: " + str(e))
             raise e
         
+    
+
     def parse_output1(self, output):
-        # Decode the output and split it into a list of values
+        # Decode the output
         try:
-            data = output.decode('utf-8').strip().split(',')
+            decoded_output = output.decode('utf-8')
         except UnicodeDecodeError:
-            data = output.decode('cp1252').strip().split(',')
-        
+            decoded_output = output.decode('cp1252')
+
+        # Use csv.reader to split the data into columns
+        reader = csv.reader(io.StringIO(decoded_output), delimiter=';')
+        data = next(reader)
+
         # Fill missing values with None
         while len(data) < 18:
             data.append(None)
-        
+
         return data  
 
     def insert_data_into_database1(self, conn, data):

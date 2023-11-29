@@ -36,7 +36,16 @@ foreach ($computer in $computers) {
 }
 
 # Convert the results to a comma-separated string
-$data_string = $results | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1
+$data_string = $results | ConvertTo-Csv -NoTypeInformation -Delimiter ";" | Select-Object -Skip 1
 
 # Output the data string to the console
 Write-Output $data_string
+
+# Check if the directory exists and create it if it doesn't
+$directory = "C:\ITOA"
+if (!(Test-Path $directory)) {
+    New-Item -ItemType Directory -Path $directory
+}
+
+# Export the data to a CSV file
+$results | Export-Csv -Path "$directory\Get-ADComputers.csv" -NoTypeInformation
